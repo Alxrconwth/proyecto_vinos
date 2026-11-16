@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VinPredictor • Sistema Inteligente de Clasificación y Calidad de Vinos</title>
+    <!-- Tipografías elegantes de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vino-primario: #58111A;
+            --vino-profundo: #3A0B11;
+            --vino-medio: #78222E;
+            --vino-suave: #9E3544;
+            --oro-acento: #C8963E;
+            --oro-claro: #F4E8C1;
+            --oro-hover: #DFAC4C;
+            --fondo-cuerpo: #F9F6F0;
+            --fondo-tarjeta: #FFFFFF;
+            --borde-suave: #E8DFD5;
+            --borde-enfocado: #C8963E;
+            --texto-principal: #2B2325;
+            --texto-secundario: #6B5E62;
+            --texto-mutado: #8E8286;
+            --sombra-tarjeta: 0 10px 28px rgba(58, 11, 17, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
+            --sombra-flotante: 0 18px 40px rgba(58, 11, 17, 0.12);
+            --radio-tarjeta: 16px;
+            --radio-control: 10px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #FAF7F2 0%, #F3ECE2 100%);
+            color: var(--texto-principal);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 30px 16px;
+        }
+
+        .contenedor-principal {
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        /* ENCABEZADO PRINCIPAL */
+        header.encabezado {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .insignia-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--oro-claro);
+            color: #7A5310;
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border: 1px solid rgba(200, 150, 62, 0.35);
+        }
+
+        h1.titulo-principal {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 2.7rem;
+            color: var(--vino-profundo);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        p.subtitulo-principal {
+            font-size: 1.12rem;
+            color: var(--texto-secundario);
+            max-width: 760px;
+            margin: 0 auto 20px auto;
+        }
+
+        .divisor-dorado {
+            width: 90px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--oro-acento), transparent);
+            margin: 0 auto;
+        }
+
+        /* SECCIÓN DE ELECCIÓN RÁPIDA (CATÁLOGO DE MUESTRAS PREDEFINIDAS) */
+        .tarjeta-catalogo {
+            background: var(--fondo-tarjeta);
+            border: 2px solid var(--oro-acento);
+            border-radius: var(--radio-tarjeta);
+            padding: 24px;
+            margin-bottom: 30px;
+            box-shadow: var(--sombra-tarjeta);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: linear-gradient(145deg, #FFFFFF, #FAF6EE);
+        }
+
+        .catalogo-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .catalogo-icono-gran {
+            font-size: 2rem;
+            background: #F8EFE0;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(200, 150, 62, 0.3);
+        }
+
+        .catalogo-textos h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.35rem;
+            color: var(--vino-profundo);
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+
+        .catalogo-textos p {
+            font-size: 0.9rem;
+            color: var(--texto-secundario);
+        }
+
+        .catalogo-control-fila {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .catalogo-control-fila {
+                grid-template-columns: 1.8fr 1fr;
+                align-items: center;
+            }
+        }
+
+        .select-catalogo-principal {
+            width: 100%;
+            padding: 13px 18px;
+            background: #FFFFFF;
+            border: 2px solid var(--oro-acento);
+            border-radius: var(--radio-control);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--vino-profundo);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(200, 150, 62, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .select-catalogo-principal:focus {
+            outline: none;
+            border-color: var(--vino-primario);
+            box-shadow: 0 0 0 3px rgba(88, 17, 26, 0.15);
+        }
+
+        .catalogo-botones-rapidos {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn-chip {
+            background: #FFFFFF;
+            border: 1px solid var(--borde-suave);
+            color: var(--vino-primario);
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-chip:hover {
+            background: var(--vino-primario);
+            color: #FFFFFF;
+            border-color: var(--vino-primario);
+            transform: translateY(-1px);
+        }
+
+        /* ALERTA DE ERROR */
+        .alerta-error {
+            background: #FDF2F2;
+            border-left: 5px solid #D32F2F;
+            color: #8C1D1D;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        /* SECCIÓN DE RESULTADOS DESTACADA */
+        .seccion-resultado {
+            background: var(--fondo-tarjeta);
+            border: 2px solid var(--oro-acento);
+            border-radius: var(--radio-tarjeta);
+            padding: 30px;
+            margin-bottom: 35px;
+            box-shadow: var(--sombra-flotante);
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .seccion-resultado::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--vino-primario), var(--oro-acento), var(--vino-medio));
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .resultado-grid-header {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 25px;
+        }
+
+        @media (min-width: 860px) {
+            .resultado-grid-header {
+                grid-template-columns: 1.3fr 1fr;
+            }
+        }
+
+        /* Tarjeta de Origen Predicho */
+        .tarjeta-origen {
+            background: linear-gradient(145deg, #FFFFFF, #FAF5F0);
+            border: 1px solid var(--borde-suave);
+            border-radius: 12px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .origen-badge-cepa {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--vino-primario);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        .origen-nombre {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.85rem;
+            color: var(--vino-profundo);
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.25;
+        }
+
+        .origen-region {
+            color: var(--oro-acento);
+            font-weight: 600;
+            font-size: 0.96rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .origen-descripcion {
+            font-size: 0.94rem;
+            color: var(--texto-secundario);
+            margin-bottom: 15px;
+        }
+
+        .origen-notas {
+            border-top: 1px dashed var(--borde-suave);
+            padding-top: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            font-size: 0.86rem;
+        }
+
+        .nota-item strong {
+            display: block;
+            color: var(--vino-primario);
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+
+        /* Tarjeta de Calidad Enológica */
+        .tarjeta-calidad {
+            background: linear-gradient(145deg, #FCF9F2, #F8EFE3);
+            border: 1px solid rgba(200, 150, 62, 0.4);
+            border-radius: 12px;
+            padding: 22px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calidad-medalla {
+            font-size: 2.6rem;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 4px 8px rgba(200, 150, 62, 0.3));
+        }
+
+        .calidad-score-caja {
+            margin-bottom: 6px;
+        }
+
+        .calidad-numero {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 3.2rem;
+            font-weight: 700;
+            color: var(--vino-profundo);
+            line-height: 1;
+        }
+
+        .calidad-escala {
+            font-size: 1rem;
+            color: var(--texto-mutado);
+            font-weight: 500;
+        }
+
+        .calidad-categoria {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--vino-medio);
+            margin-bottom: 6px;
+        }
+
+        .calidad-descripcion {
+            font-size: 0.88rem;
+            color: var(--texto-secundario);
+            max-width: 320px;
+        }
+
+        /* Probabilidades y Factores */
+        .resultado-grid-bottom {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            border-top: 1px solid var(--borde-suave);
+            padding-top: 22px;
+        }
+
+        @media (min-width: 768px) {
+            .resultado-grid-bottom {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .caja-probabilidades, .caja-factores {
+            background: #FAF8F5;
+            border: 1px solid var(--borde-suave);
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .subtitulo-resultado {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--vino-primario);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .probabilidad-fila {
+            margin-bottom: 12px;
+        }
+
+        .probabilidad-fila:last-child {
+            margin-bottom: 0;
+        }
+
+        .prob-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.86rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .prob-barra-fondo {
+            height: 9px;
+            background: #E8E2D9;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .prob-barra-llenado {
+            height: 100%;
+            background: linear-gradient(90deg, var(--vino-medio), var(--oro-acento));
+            border-radius: 999px;
+            transition: width 0.8s ease-out;
+        }
+
+        .factores-lista {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .factor-item {
+            background: #FFFFFF;
+            border: 1px solid var(--borde-suave);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+
+        .factor-item .nombre {
+            font-size: 0.78rem;
+            color: var(--texto-secundario);
+            font-weight: 500;
+        }
+
+        .factor-item .valor {
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--vino-profundo);
+            margin: 2px 0;
+        }
+
+        .factor-item .estado {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #2E7D32;
+        }
+
+        /* FORMULARIO DE ENTRADA */
+        form.formulario-vinos {
+            margin-top: 10px;
+        }
+
+        .grid-categorias {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media (min-width: 900px) {
+            .grid-categorias {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .tarjeta-categoria {
+            background: var(--fondo-tarjeta);
+            border: 1px solid var(--borde-suave);
+            border-radius: var(--radio-tarjeta);
+            padding: 24px;
+            box-shadow: var(--sombra-tarjeta);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .tarjeta-categoria:hover {
+            box-shadow: var(--sombra-flotante);
+        }
+
+        .categoria-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .categoria-icono {
+            font-size: 1.6rem;
+            background: #FDF9F3;
+            border: 1px solid var(--borde-suave);
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .categoria-titulo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--vino-profundo);
+        }
+
+        .categoria-descripcion {
+            font-size: 0.86rem;
+            color: var(--texto-secundario);
+            margin-bottom: 20px;
+        }
+
+        .campos-grupo {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        @media (min-width: 480px) {
+            .campos-grupo {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .campo-formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: #FCFAF7;
+            border: 1px solid #ECE4DA;
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .campo-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        label.etiqueta-campo {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--texto-principal);
+        }
+
+        .unidad-campo {
+            font-size: 0.74rem;
+            color: var(--texto-mutado);
+            font-weight: 600;
+        }
+
+        .input-contenedor {
+            position: relative;
+        }
+
+        input.input-quimico {
+            width: 100%;
+            padding: 8px 12px;
+            background: #FFFFFF;
+            border: 1.5px solid var(--borde-suave);
+            border-radius: var(--radio-control);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--vino-profundo);
+            transition: all 0.2s ease;
+        }
+
+        input.input-quimico:focus {
+            outline: none;
+            background: #FFFFFF;
+            border-color: var(--borde-enfocado);
+            box-shadow: 0 0 0 3px rgba(200, 150, 62, 0.2);
+        }
+
+        /* SELECTOR DE NIVEL SUGERIDO POR VARIABLE */
+        .selector-nivel-caja {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .select-nivel-rapido {
+            width: 100%;
+            padding: 5px 8px;
+            background: #F4ECE1;
+            border: 1px solid rgba(200, 150, 62, 0.4);
+            border-radius: 6px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.77rem;
+            font-weight: 600;
+            color: #693C0A;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .select-nivel-rapido:hover {
+            background: #EDE1D0;
+            border-color: var(--oro-acento);
+        }
+
+        .campo-descripcion {
+            font-size: 0.72rem;
+            color: var(--texto-mutado);
+            line-height: 1.3;
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .acciones-formulario {
+            margin-top: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-enviar-prediccion {
+            background: linear-gradient(135deg, var(--vino-primario) 0%, var(--vino-profundo) 100%);
+            color: #FFFFFF;
+            border: 1px solid var(--oro-acento);
+            border-radius: 12px;
+            padding: 16px 42px;
+            font-size: 1.15rem;
+            font-weight: 700;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(88, 17, 26, 0.3);
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-enviar-prediccion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(88, 17, 26, 0.4);
+            background: linear-gradient(135deg, var(--vino-medio) 0%, var(--vino-primario) 100%);
+        }
+
+        .btn-enviar-prediccion:active {
+            transform: translateY(1px);
+        }
+
+        /* ACORDEÓN DE DOCUMENTACIÓN / GLOSARIO */
+        .seccion-glosario {
+            margin-top: 50px;
+            background: var(--fondo-tarjeta);
+            border: 1px solid var(--borde-suave);
+            border-radius: var(--radio-tarjeta);
+            box-shadow: var(--sombra-tarjeta);
+            overflow: hidden;
+        }
+
+        .glosario-toggle {
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            background: #FDFBF8;
+            user-select: none;
+        }
+
+        .glosario-toggle h3 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.25rem;
+            color: var(--vino-profundo);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .glosario-contenido {
+            padding: 0 24px 24px 24px;
+            display: none;
+            border-top: 1px solid var(--borde-suave);
+        }
+
+        .glosario-contenido.abierto {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .glosario-tabla {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.88rem;
+        }
+
+        .glosario-tabla th {
+            background: #F7F3EC;
+            color: var(--vino-primario);
+            font-weight: 700;
+            text-align: left;
+            padding: 10px 14px;
+            border-bottom: 2px solid var(--borde-suave);
+        }
+
+        .glosario-tabla td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--borde-suave);
+            vertical-align: top;
+        }
+
+        .glosario-tabla tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* PIE DE PÁGINA */
+        footer.pie-pagina {
+            margin-top: 50px;
+            text-align: center;
+            padding: 25px;
+            color: var(--texto-secundario);
+            font-size: 0.86rem;
+            border-top: 1px solid var(--borde-suave);
+        }
+
+        footer strong {
+            color: var(--vino-primario);
+        }
+
+        /* Animación para inputs cuando se carga un preajuste */
+        @keyframes pulsoInput {
+            0% { background-color: #FFFFFF; }
+            50% { background-color: #FFF3D6; border-color: var(--oro-acento); }
+            100% { background-color: #FFFFFF; }
+        }
+
+        .input-actualizado {
+            animation: pulsoInput 0.7s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor-principal">
+
+    <!-- ENCABEZADO PRINCIPAL -->
+    <header class="encabezado">
+        <div class="insignia-top">
+            <span>🍇 Inteligencia Artificial Enológica</span>
+        </div>
+        <h1 class="titulo-principal">Sistema Predictor de Origen y Calidad de Vinos</h1>
+        <p class="subtitulo-principal">
+            Clasificación química avanzada y valoración enológica automática de muestras vinícolas
+            a partir de sus 13 descriptores físico-químicos espectrofotométricos.
+        </p>
+        <div class="divisor-dorado"></div>
+    </header>
+
+    <!-- SELECTOR PRINCIPAL: ELEGIR VINO DE LA BODEGA (VALORES PREDEFINIDOS) -->
+    <div class="tarjeta-catalogo">
+        <div class="catalogo-header">
+            <div class="catalogo-icono-gran">🍷</div>
+            <div class="catalogo-textos">
+                <h3>Elegir Muestra de la Bodega (Valores Predefinidos)</h3>
+                <p>
+                    Para no tener que escribir valores numéricos a mano, selecciona un vino del catálogo
+                    y sus 13 parámetros se cargarán automáticamente:
+                </p>
+            </div>
+        </div>
+
+        <div class="catalogo-control-fila">
+            <select id="selector_muestra_principal" class="select-catalogo-principal" onchange="seleccionarMuestraCatalogo(this.value)">
+                <option value="">-- Haz clic aquí para elegir un vino predefinido --</option>
+                <optgroup label="👑 Cultivar Barolo (Clase 0 - Nebbiolo DOCG)">
+                    <option value="barolo_reserva">🍷 Barolo Gran Reserva (Lote C0-A: Alta Prolina 1065 mg/L, 14.2°)</option>
+                    <option value="barolo_clasico">👑 Barolo Tradicional (Lote C0-B: Flavonoides Nobles 3.24 mg/L)</option>
+                </optgroup>
+                <optgroup label="🌸 Cultivar Grignolino (Clase 1 - Monferrato DOC)">
+                    <option value="grignolino_fresco">🌸 Grignolino Fresco y Ligero (Lote C1-A: 12.3° alcohol, acidez suave)</option>
+                    <option value="grignolino_aromatico">🍇 Grignolino Joven Floral (Lote C1-B: Equilibrado, rubí claro)</option>
+                </optgroup>
+                <optgroup label="🍇 Cultivar Barbera (Clase 2 - Barbera DOCG)">
+                    <option value="barbera_acida">🍾 Barbera Clásica (Lote C2-A: Alta Acidez Málica 3.33 g/L)</option>
+                    <option value="barbera_oscura">🍷 Barbera de Capa Intensa (Lote C2-B: Color Profundo 7.4 Abs)</option>
+                </optgroup>
+                <optgroup label="⚖️ Muestra Promedio">
+                    <option value="promedio">⚖️ Perfil Promedio General de Viñedos</option>
+                </optgroup>
+            </select>
+
+            <div class="catalogo-botones-rapidos">
+                <button type="button" class="btn-chip" onclick="seleccionarMuestraCatalogo('barolo_reserva')">
+                    <span>👑</span> Barolo
+                </button>
+                <button type="button" class="btn-chip" onclick="seleccionarMuestraCatalogo('grignolino_fresco')">
+                    <span>🌸</span> Grignolino
+                </button>
+                <button type="button" class="btn-chip" onclick="seleccionarMuestraCatalogo('barbera_acida')">
+                    <span>🍇</span> Barbera
+                </button>
+                <button type="button" class="btn-chip" onclick="seleccionarMuestraCatalogo('promedio')">
+                    <span>🔄</span> Promedios
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENSAJE DE ERROR (SI EXISTE) -->
+    {% if error %}
+    <div class="alerta-error">
+        <strong>⚠️ Atención:</strong> {{ error }}
+    </div>
+    {% endif %}
+
+    <!-- TARJETA DE RESULTADOS (SI SE HA HECHO UNA PREDICCIÓN) -->
+    {% if resultado %}
+    <section class="seccion-resultado" id="bloque-resultado">
+        <div class="resultado-grid-header">
+            <!-- Columna Izquierda: Origen y Cepa -->
+            <div class="tarjeta-origen">
+                <div>
+                    <div class="origen-badge-cepa">
+                        <span>{{ resultado.origen.icono }}</span>
+                        <span>{{ resultado.origen.cepa }}</span>
+                    </div>
+                    <h2 class="origen-nombre">{{ resultado.origen.nombre_completo }}</h2>
+                    <div class="origen-region">
+                        <span>📍</span> {{ resultado.origen.region }}
+                    </div>
+                    <p class="origen-descripcion">{{ resultado.origen.perfil }}</p>
+                </div>
+                <div class="origen-notas">
+                    <div class="nota-item">
+                        <strong>Potencial de Guarda</strong>
+                        <span>{{ resultado.origen.guarda }}</span>
+                    </div>
+                    <div class="nota-item">
+                        <strong>Maridaje Enológico</strong>
+                        <span>{{ resultado.origen.maridaje }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Columna Derecha: Índice de Calidad Enológica -->
+            <div class="tarjeta-calidad">
+                <div class="calidad-medalla">{{ resultado.calidad.icono }}</div>
+                <div class="calidad-score-caja">
+                    <span class="calidad-numero">{{ resultado.calidad.puntaje }}</span>
+                    <span class="calidad-escala">/ 100</span>
+                </div>
+                <div class="calidad-categoria">{{ resultado.calidad.categoria }}</div>
+                <p class="calidad-descripcion">{{ resultado.calidad.descripcion }}</p>
+            </div>
+        </div>
+
+        <!-- Fila Inferior: Probabilidades y Factores Químicos Clave -->
+        <div class="resultado-grid-bottom">
+            <!-- Probabilidades del Clasificador -->
+            <div class="caja-probabilidades">
+                <div class="subtitulo-resultado">
+                    <span>📊 Distribución de Confianza del Modelo</span>
+                </div>
+                {% for prob in resultado.probabilidades %}
+                <div class="probabilidad-fila">
+                    <div class="prob-info">
+                        <span>{{ prob.nombre }} {% if prob.es_ganador %}⭐{% endif %}</span>
+                        <span>{{ prob.porcentaje }}%</span>
+                    </div>
+                    <div class="prob-barra-fondo">
+                        <div class="prob-barra-llenado" data-porcentaje="{{ prob.porcentaje }}" style="width: 0%;"></div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Factores Químicos Analizados -->
+            <div class="caja-factores">
+                <div class="subtitulo-resultado">
+                    <span>🔬 Factores Analíticos Clave</span>
+                </div>
+                <div class="factores-lista">
+                    {% for factor in resultado.calidad.factores %}
+                    <div class="factor-item">
+                        <div class="nombre">{{ factor.factor }}</div>
+                        <div class="valor">{{ factor.valor }}</div>
+                        <div class="estado">● {{ factor.estado }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- FORMULARIO DE ENTRADA ORGANIZADO EN CATEGORÍAS -->
+    <form method="POST" action="/" class="formulario-vinos" id="formVinos">
+        <input type="hidden" name="selector_muestra_activa" id="input_muestra_activa" value="{{ muestra_activa }}">
+
+        <div class="grid-categorias">
+            {% for cat in categorias %}
+            <div class="tarjeta-categoria">
+                <div class="categoria-header">
+                    <div class="categoria-icono">{{ cat.icono }}</div>
+                    <h2 class="categoria-titulo">{{ cat.titulo }}</h2>
+                </div>
+                <p class="categoria-descripcion">{{ cat.descripcion }}</p>
+
+                <div class="campos-grupo">
+                    {% for col, info in variables.items() if info.categoria == cat.id %}
+                    <div class="campo-formulario">
+                        <div class="campo-header">
+                            <label class="etiqueta-campo" for="input_{{ col }}">{{ info.nombre }}</label>
+                            <span class="unidad-campo">({{ info.unidad }})</span>
+                        </div>
+
+                        <!-- INPUT NUMÉRICO -->
+                        <div class="input-contenedor">
+                            <input 
+                                type="number" 
+                                step="any" 
+                                id="input_{{ col }}" 
+                                name="{{ col }}" 
+                                value="{{ datos[col] }}" 
+                                class="input-quimico"
+                                required
+                            >
+                        </div>
+
+                        <!-- SELECTOR DE VALORES PREDEFINIDOS (PARA NO TENER QUE ESCRIBIR MANUALMENTE) -->
+                        <div class="selector-nivel-caja">
+                            <select class="select-nivel-rapido" onchange="actualizarValorCampo('{{ col }}', this.value)">
+                                <option value="">⚡ Opciones sugeridas...</option>
+                                {% for opc in info.opciones_sugeridas %}
+                                <option value="{{ opc.valor }}">{{ opc.etiqueta }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <span class="campo-descripcion">{{ info.descripcion }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- BOTÓN PRINCIPAL DE ACCIÓN -->
+        <div class="acciones-formulario">
+            <button type="submit" class="btn-enviar-prediccion">
+                <span>🍷</span>
+                <span>Ejecutar Predicción de Origen y Calidad</span>
+            </button>
+            <small style="color: var(--texto-mutado);">
+                Procesamiento instantáneo mediante el ensamble Random Forest de 100 árboles de decisión.
+            </small>
+        </div>
+    </form>
+
+    <!-- SECCIÓN DESPLEGABLE: GLOSARIO CIENTÍFICO Y ENOLÓGICO -->
+    <section class="seccion-glosario">
+        <div class="glosario-toggle" onclick="toggleGlosario()">
+            <h3>Glosario Técnico de Variables Químicas del Vino</h3>
+            <span id="iconoToggle" style="font-size: 1.2rem; color: var(--oro-acento);">▼ Ver Detalles</span>
+        </div>
+        <div class="glosario-contenido" id="glosarioContenido">
+            <p style="margin-top: 15px; color: var(--texto-secundario); font-size: 0.92rem;">
+                A continuación se describe el fundamento enológico de cada uno de los 13 descriptores químicos 
+                analizados por el algoritmo para determinar la denominación de origen y la calidad de la muestra:
+            </p>
+            <table class="glosario-tabla">
+                <thead>
+                    <tr>
+                        <th>Parámetro Químico</th>
+                        <th>Unidad</th>
+                        <th>Rango Normal</th>
+                        <th>Interpretación Enológica y Organoléptica</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for col, info in variables.items() %}
+                    <tr>
+                        <td><strong>{{ info.nombre }}</strong> <br><small style="color:#888;">{{ col }}</small></td>
+                        <td><code>{{ info.unidad }}</code></td>
+                        <td>{{ info.min }} – {{ info.max }}</td>
+                        <td>{{ info.descripcion }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- PIE DE PÁGINA -->
+    <footer class="pie-pagina">
+        <p><strong>VinPredictor</strong> - Sistema de Inteligencia Artificial para la Predicción de Origen y Calidad de Vinos</p>
+
+    </footer>
+
+</div>
+
+<!-- DATOS DEL CATÁLOGO EN FORMATO JSON (SEPARADO PARA EVITAR ADVERTENCIAS EN EDITORES COMO VS CODE) -->
+<script type="application/json" id="datos-catalogo">
+{{ catalogo | tojson }}
+</script>
+
+<!-- SCRIPT AUTÓNOMO PARA SELECCIÓN DE OPCIONES Y PREAJUSTES -->
+<script>
+    // Catálogo completo de muestras cargado de forma limpia y estándar
+    const catalogoMuestras = JSON.parse(document.getElementById('datos-catalogo').textContent);
+
+    // Función para seleccionar una muestra del catálogo global
+    function seleccionarMuestraCatalogo(clave) {
+        if (!clave || !catalogoMuestras[clave]) return;
+        
+        // Actualizar el valor del selector principal
+        const selectPrincipal = document.getElementById('selector_muestra_principal');
+        if (selectPrincipal && selectPrincipal.value !== clave) {
+            selectPrincipal.value = clave;
+        }
+
+        const inputMuestraActiva = document.getElementById('input_muestra_activa');
+        if (inputMuestraActiva) {
+            inputMuestraActiva.value = clave;
+        }
+
+        const valores = catalogoMuestras[clave].valores;
+        for (const [col, val] of Object.entries(valores)) {
+            const input = document.getElementById('input_' + col);
+            if (input) {
+                input.value = val;
+                input.classList.remove('input-actualizado');
+                void input.offsetWidth; // Forzar reflujo CSS
+                input.classList.add('input-actualizado');
+            }
+        }
+    }
+
+    // Función para actualizar un campo individual al elegir de su selector desplegable
+    function actualizarValorCampo(columna, valor) {
+        if (valor === "" || valor === null) return;
+        const input = document.getElementById('input_' + columna);
+        if (input) {
+            input.value = valor;
+            input.classList.remove('input-actualizado');
+            void input.offsetWidth;
+            input.classList.add('input-actualizado');
+        }
+    }
+
+    function toggleGlosario() {
+        const contenido = document.getElementById('glosarioContenido');
+        const icono = document.getElementById('iconoToggle');
+        if (contenido.classList.contains('abierto')) {
+            contenido.classList.remove('abierto');
+            icono.textContent = '▼ Ver Detalles';
+        } else {
+            contenido.classList.add('abierto');
+            icono.textContent = '▲ Ocultar Detalles';
+        }
+    }
+
+    // Inicialización y animaciones al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+        // Animar el llenado de las barras de probabilidad suavemente
+        document.querySelectorAll('.prob-barra-llenado').forEach(el => {
+            const pct = el.getAttribute('data-porcentaje');
+            if (pct) {
+                setTimeout(() => {
+                    el.style.width = pct + '%';
+                }, 100);
+            }
+        });
+
+        // Scroll suave al resultado si se ejecutó una predicción
+        const resultadoBloque = document.getElementById('bloque-resultado');
+        if (resultadoBloque) {
+            resultadoBloque.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+</script>
+
+</body>
+</html>
